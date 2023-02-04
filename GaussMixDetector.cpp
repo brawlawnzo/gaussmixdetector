@@ -238,20 +238,10 @@ void GaussMixDetector::getpwUpdateAndMotion( cv::Mat& motion )
 	}
 }
 
-inline double Mahalanobis(const cv::Matx13d& delta, const cv::Matx33d& C)
-{
-	return (delta * C.inv()).dot(delta);
-}
-
-inline double Mahalanobis(const cv::Matx13d& x, const cv::Matx13d& m, const cv::Matx33d& C)
-{
-	return Mahalanobis((x - m), C);
-}
-
 template <int channels>
 double Mahalanobis(const cv::Matx<double, 1, channels>& x, const cv::Matx<double, channels, channels>& C)
 {
-	return 0.0;
+	return (x * C.inv()).dot(x);
 }
 
 template <>
