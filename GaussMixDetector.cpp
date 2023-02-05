@@ -428,7 +428,7 @@ void GaussMixDetector::getMotionPicture( const cv::Mat& frame, cv::Mat& motion, 
 	}
 
 	motion = cv::Mat( fRows, fCols, CV_MAKETYPE( CV_8U, 1 ), cv::Scalar( 0 ) );
-
+	
 	if (fChannels == 1)
 	{
 		switch (frame.depth())
@@ -485,7 +485,7 @@ void GaussMixDetector::getMotionPicture( const cv::Mat& frame, cv::Mat& motion, 
 	}
 	else
 	{
-		throw std::invalid_argument("Input image has non-standard number of channels.");
+		throw std::invalid_argument("Supports only 1 through 3 number of channels.");
 	}
 
 	// optional erode + dilate processing of the motion image
