@@ -428,7 +428,6 @@ void GaussMixDetector::getMotionPicture( const cv::Mat& frame, cv::Mat& motion, 
 	}
 
 	motion = cv::Mat( fRows, fCols, CV_MAKETYPE( CV_8U, 1 ), cv::Scalar( 0 ) );
-	frame.convertTo( fClone, CV_MAKETYPE(CVType, fChannels) );
 
 	if (fChannels == 1)
 	{

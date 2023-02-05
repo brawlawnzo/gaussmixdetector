@@ -22,7 +22,6 @@ class GaussMixDetector
 	double Cf { defaultCf };                                    // portion of FG data
 
 	int fRows { 0 }, fCols { 0 }, fChannels { 0 };              // frame parameters
-	cv::Mat fClone;
 
 	bool firstFrame { true };                                   // first step flag
 
