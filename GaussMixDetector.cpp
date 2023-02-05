@@ -348,7 +348,7 @@ void GaussMixDetector::getpwUpdateAndMotionRGB( cv::Mat& motion )
 			for ( uchar k = 0U; k < tmpK; k++ )
 			{
 				isCurrent.at(k) = false;
-				if ( Mahalanobis<3>(delta.at(k), tmpD.at(k)) < sqrt( cv::trace(tmpD.at(k)) ) )
+				if ( Mahalanobis(delta.at(k), tmpD.at(k)) < sqrt( cv::trace(tmpD.at(k)) ) )
 				{
 					count++;
 					isCurrent.at(k) = true;
