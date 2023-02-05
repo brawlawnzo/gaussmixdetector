@@ -42,7 +42,9 @@ public:
 
 private:
 	void Init(const cv::Mat& frame);
-	void getpwUpdateAndMotion(cv::Mat& motion);
-	void getpwUpdateAndMotionRGB(cv::Mat& motion);
+	template <typename matPtrType>
+	void getpwUpdateAndMotion(const cv::Mat& frame, cv::Mat& motion);
+	template <typename matPtrType, int channels>
+	void getpwUpdateAndMotionRGB(const cv::Mat& frame, cv::Mat& motion);
 };
 
