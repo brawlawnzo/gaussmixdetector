@@ -91,7 +91,7 @@ void GaussMixDetector::getpwUpdateAndMotion( const cv::Mat& frame, cv::Mat& moti
 		}
 		for ( int j = 0; j < fCols*fChannels; j += fChannels )
 		{
-			double tmpF = ptF[j];
+			double tmpF = static_cast<double>(ptF[j]);
 			uchar tmpK = ptK[j];
 			for ( uchar k = 0U; k < tmpK; k++ )
 			{
@@ -287,7 +287,7 @@ void GaussMixDetector::getpwUpdateAndMotionRGB( const cv::Mat& frame, cv::Mat& m
 			
 			for ( int c = 0; c < channels; c++ )
 			{
-				tmpF(c) = ptF[iRGB + c];
+				tmpF(c) = static_cast<double>(ptF[iRGB + c]);
 			}
 			tmpK = ptK[j];
 
