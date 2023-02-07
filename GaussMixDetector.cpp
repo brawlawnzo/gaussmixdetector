@@ -429,63 +429,55 @@ void GaussMixDetector::getMotionPicture( const cv::Mat& frame, cv::Mat& motion, 
 
 	motion = cv::Mat( fRows, fCols, CV_MAKETYPE( CV_8U, 1 ), cv::Scalar( 0 ) );
 	
-	if (fChannels == 1)
+	switch (frame.type())
 	{
-		switch (frame.depth())
-		{
-			case CV_8U:
-				getpwUpdateAndMotion<unsigned char>(frame, motion);
-				break;
-			case CV_8S:
-				getpwUpdateAndMotion<signed char>(frame, motion);
-				break;
-			case CV_16U:
-				getpwUpdateAndMotion<unsigned short>(frame, motion);
-				break;
-			case CV_16S:
-				getpwUpdateAndMotion<signed short>(frame, motion);
-				break;
-			case CV_32S:
-				getpwUpdateAndMotion<signed int>(frame, motion);
-				break;
-			case CV_32F:
-				getpwUpdateAndMotion<float>(frame, motion);
-				break;
-			case CV_64F:
-				getpwUpdateAndMotion<double>(frame, motion);
-				break;
-		}
-	}
-	else if (fChannels == 3)
-	{
-		switch (frame.depth())
-		{
-			case CV_8U:
-				getpwUpdateAndMotionRGB<unsigned char, 3>(frame, motion);
-				break;
-			case CV_8S:
-				getpwUpdateAndMotionRGB<signed char, 3>(frame, motion);
-				break;
-			case CV_16U:
-				getpwUpdateAndMotionRGB<unsigned short, 3>(frame, motion);
-				break;
-			case CV_16S:
-				getpwUpdateAndMotionRGB<signed short, 3>(frame, motion);
-				break;
-			case CV_32S:
-				getpwUpdateAndMotionRGB<signed int, 3>(frame, motion);
-				break;
-			case CV_32F:
-				getpwUpdateAndMotionRGB<float, 3>(frame, motion);
-				break;
-			case CV_64F:
-				getpwUpdateAndMotionRGB<double, 3>(frame, motion);
-				break;
-		}
-	}
-	else
-	{
-		throw std::invalid_argument("Supports only 1 through 3 number of channels.");
+		// 1 channels
+		case CV_8UC1:
+			getpwUpdateAndMotion<uchar>(frame, motion);
+			break;
+		case CV_8SC1:
+			getpwUpdateAndMotion<schar>(frame, motion);
+			break;
+		case CV_16UC1:
+			getpwUpdateAndMotion<ushort>(frame, motion);
+			break;
+		case CV_16SC1:
+			getpwUpdateAndMotion<short>(frame, motion);
+			break;
+		case CV_32SC1:
+			getpwUpdateAndMotion<int>(frame, motion);
+			break;
+		case CV_32FC1:
+			getpwUpdateAndMotion<float>(frame, motion);
+			break;
+		case CV_64FC1:
+			getpwUpdateAndMotion<double>(frame, motion);
+			break;
+		// 3 channels
+		case CV_8UC3:
+			getpwUpdateAndMotionRGB<uchar, 3>(frame, motion);
+			break;
+		case CV_8SC3:
+			getpwUpdateAndMotionRGB<schar, 3>(frame, motion);
+			break;
+		case CV_16UC3:
+			getpwUpdateAndMotionRGB<ushort, 3>(frame, motion);
+			break;
+		case CV_16SC3:
+			getpwUpdateAndMotionRGB<short, 3>(frame, motion);
+			break;
+		case CV_32SC3:
+			getpwUpdateAndMotionRGB<int, 3>(frame, motion);
+			break;
+		case CV_32FC3:
+			getpwUpdateAndMotionRGB<float, 3>(frame, motion);
+			break;
+		case CV_64FC3:
+			getpwUpdateAndMotionRGB<double, 3>(frame, motion);
+			break;
+		default:
+			throw std::invalid_argument("Unknown Mat type. Accepted depths: CV_8U, CV_8S, \
+				CV_16U, CV_16S, CV_32S, CV_32F, CV_64F. Accepted channels number: 1, 2, 3");
 	}
 
 	// optional erode + dilate processing of the motion image
