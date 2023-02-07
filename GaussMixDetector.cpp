@@ -275,7 +275,8 @@ double Mahalanobis<3>(const cv::Matx13d& x, const cv::Matx33d& C)
 	L.at(5) = C(2, 2) - L.at(3) * C(2, 0) - L.at(4) * L.at(4) * L.at(2);
 
 	// Mahalanobis vector
-	std::array<double, 3> y;
+	std::array<double, 3> y {};
+
 	y.at(0) = x(0) * x(0) / L.at(0);
 	y.at(1) = x(1) - x(0) * L.at(1);
 	y.at(1) *= y.at(1);
