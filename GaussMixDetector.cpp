@@ -307,8 +307,8 @@ void GaussMixDetector::getpwUpdateAndMotionRGB(const cv::Mat& frame, cv::Mat& mo
 	for( int i = 0; i < fRows; i++ )
 	{
 		const auto* framePtr = frame.ptr<matPtrType>(i);
-		auto* ptMo = motion.ptr<uchar>(i);
-		auto* ptK = currentK.ptr<uchar>(i);
+		auto* motionPtr = motion.ptr<uchar>(i);
+		auto* currentKPtr = currentK.ptr<uchar>(i);
 		for ( uchar k = 0U; k < K; k++ )
 		{
 			meanVal.at(k) = mean[k].ptr<cv::Matx<double, 1, channels>>(i);
@@ -316,7 +316,7 @@ void GaussMixDetector::getpwUpdateAndMotionRGB(const cv::Mat& frame, cv::Mat& mo
 			weightVal.at(k) = weight[k].ptr<double>(i);
 		}
 
-		uchar tmpK = 0U;
+		uchar currentPixelK = 0U;
 		for ( int j = 0; j < fCols; j++ )
 		{
 			const int iRGB = j*channels;
@@ -325,14 +325,14 @@ void GaussMixDetector::getpwUpdateAndMotionRGB(const cv::Mat& frame, cv::Mat& mo
 			{
 				pixelVal(c) = static_cast<double>(framePtr[iRGB + c]);
 			}
-			tmpK = ptK[j];
-			for ( uchar k = 0U; k < tmpK; k++ )
+			currentPixelK = currentKPtr[j];
+			for ( uchar k = 0U; k < currentPixelK; k++ )
 			{
 				delta.at(k) = pixelVal - meanVal.at(k)[j];
 			}
 
 			uchar count = 0U;
-			for ( uchar k = 0U; k < tmpK; k++ )
+			for ( uchar k = 0U; k < currentPixelK; k++ )
 			{
 				isCurrent.at(k) = false;
 				if ( Mahalanobis(delta.at(k), deviationVal.at(k)[j]) < sqrt( cv::trace(deviationVal.at(k)[j]) ) )
@@ -348,12 +348,12 @@ void GaussMixDetector::getpwUpdateAndMotionRGB(const cv::Mat& frame, cv::Mat& mo
 
 			if( count == 0U )
 			{
-				if ( tmpK < K )
+				if ( currentPixelK < K )
 				{
-					meanVal.at(tmpK)[j] = pixelVal;
-					deviationVal.at(tmpK)[j] = initDeviation * cv::Matx<double, channels, channels>::eye();
-					weightVal.at(tmpK)[j] = alpha;
-					tmpK++;
+					meanVal.at(currentPixelK)[j] = pixelVal;
+					deviationVal.at(currentPixelK)[j] = initDeviation * cv::Matx<double, channels, channels>::eye();
+					weightVal.at(currentPixelK)[j] = alpha;
+					currentPixelK++;
 				}
 				else
 				{
@@ -364,7 +364,7 @@ void GaussMixDetector::getpwUpdateAndMotionRGB(const cv::Mat& frame, cv::Mat& mo
 			}
 			else
 			{
-				for ( uchar k = 0U; k < tmpK; k++ )
+				for ( uchar k = 0U; k < currentPixelK; k++ )
 				{
 					if ( isCurrent.at(k) )
 					{
@@ -377,13 +377,13 @@ void GaussMixDetector::getpwUpdateAndMotionRGB(const cv::Mat& frame, cv::Mat& mo
 
 			{
 				double w = 0;
-				for ( uchar k = 0U; k < tmpK; k++ )
+				for ( uchar k = 0U; k < currentPixelK; k++ )
 				{
 					weightVal.at(k)[j] = weightVal.at(k)[j] * (1-alpha) + alpha*int(isCurrent.at(k));
 					w += weightVal.at(k)[j];
 				}
 
-				for ( uchar k = 0U; k < tmpK; k++ )
+				for ( uchar k = 0U; k < currentPixelK; k++ )
 				{
 					weightVal.at(k)[j] = weightVal.at(k)[j] / w;
 				}
@@ -393,7 +393,7 @@ void GaussMixDetector::getpwUpdateAndMotionRGB(const cv::Mat& frame, cv::Mat& mo
 			while (!noMov)
 			{
 				noMov = true;
-				for ( uchar k = 0U; k < tmpK-1U; k++ )
+				for ( uchar k = 0U; k < currentPixelK-1U; k++ )
 				{
 					if ( weightVal.at(k)[j] < weightVal.at(k+1U)[j] )
 					{
@@ -410,10 +410,10 @@ void GaussMixDetector::getpwUpdateAndMotionRGB(const cv::Mat& frame, cv::Mat& mo
 
 			if( FG )
 			{
-				ptMo[j] = 255U;
+				motionPtr[j] = 255U;
 			}
 
-			ptK[j] = tmpK;
+			currentKPtr[j] = currentPixelK;
 		}
 	}
 }
