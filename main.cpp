@@ -15,7 +15,8 @@ int main(int argc, char** argv)
 		"{history hist   |100   | history parameter     }"
 		"{dev d          |20.0  | initial deviation     }"
 		"{T t            |30.0  | BF threshold          }"
-		"{Cf cf          |0.1   | portion of FG data    }";
+		"{Cf cf          |0.1   | portion of FG data    }"
+		"{noshow ns      |      | disable preview       }";
 
 	cv::CommandLineParser parser(argc, argv, keys);
 	parser.about("Gauss Mixture Motion Detector\n");
@@ -41,6 +42,7 @@ int main(int argc, char** argv)
 	const auto deviation = parser.get<double>("dev");
 	const auto T = parser.get<double>("T");
 	const auto Cf = parser.get<double>("Cf");
+	const bool showPreview { !parser.has("noshow") };
 
 	if (!parser.check())
 	{
@@ -86,8 +88,11 @@ int main(int argc, char** argv)
 		rawName = inputName.substr(0, lastdot);     // cut off the extension
 	}
 
-	cv::namedWindow("Frame");
-	cv::namedWindow("Motion");
+	if (showPreview)
+	{
+		cv::namedWindow("Frame");
+		cv::namedWindow("Motion");
+	}
 
 	cv::VideoWriter vidmotion;
 	cv::String videoExt(".mp4");
@@ -122,7 +127,10 @@ int main(int argc, char** argv)
 		elapsedTimeGauss += (t2.QuadPart - t1.QuadPart) / frequency.QuadPart;
 #endif
 
-		cv::imshow("Motion", motion);
+		if (showPreview)
+		{
+			cv::imshow("Motion", motion);
+		}
 
 		// Writing motion video
 		if (!vidmotion.isOpened())
@@ -133,7 +141,10 @@ int main(int argc, char** argv)
 		}
 		vidmotion << motion;
 
-		cv::imshow("Frame", frame);
+		if (showPreview)
+		{
+			cv::imshow("Frame", frame);
+		}
 
 		total++;
 
