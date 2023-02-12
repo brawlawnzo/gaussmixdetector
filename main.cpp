@@ -16,7 +16,7 @@ int main(int argc, char** argv)
 		"{dev d          |20.0  | initial deviation     }"
 		"{T t            |30.0  | BF threshold          }"
 		"{Cf cf          |0.1   | portion of FG data    }"
-		"{noshow ns      |      | disable preview       }";
+		"{show preview   |      | enable preview        }";
 
 	cv::CommandLineParser parser(argc, argv, keys);
 	parser.about("Gauss Mixture Motion Detector\n");
@@ -42,7 +42,7 @@ int main(int argc, char** argv)
 	const auto deviation = parser.get<double>("dev");
 	const auto T = parser.get<double>("T");
 	const auto Cf = parser.get<double>("Cf");
-	const bool showPreview { !parser.has("noshow") };
+	const bool showPreview { parser.has("show") };
 
 	if (!parser.check())
 	{
