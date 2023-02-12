@@ -295,14 +295,14 @@ double Mahalanobis<3>(const cv::Matx13d& x, const cv::Matx33d& C)
 template <typename matPtrType, int channels>
 void GaussMixDetector::getpwUpdateAndMotionRGB(const cv::Mat& frame, cv::Mat& motion)
 {
-	std::array<ptrType*, K> weightVal {};
+	std::array<double*, K> weightVal {};
 
 	std::array<bool, K> isCurrent {};
 
 	cv::Matx<double, 1, channels> pixelVal;
-	std::array<cv::Matx<double, 1, channels>, K> delta{};
-	std::array<cv::Matx<double, 1, channels>*, K> meanVal{};
-	std::array<cv::Matx<double, channels, channels>*, K> deviationVal{};
+	std::array<cv::Matx<double, 1, channels>, K> delta {};
+	std::array<cv::Matx<double, 1, channels>*, K> meanVal {};
+	std::array<cv::Matx<double, channels, channels>*, K> deviationVal {};
 
 	for( int i = 0; i < fRows; i++ )
 	{
@@ -335,7 +335,7 @@ void GaussMixDetector::getpwUpdateAndMotionRGB(const cv::Mat& frame, cv::Mat& mo
 			for ( uchar k = 0U; k < currentPixelK; k++ )
 			{
 				isCurrent.at(k) = false;
-				if ( Mahalanobis(delta.at(k), deviationVal.at(k)[j]) < sqrt( cv::trace(deviationVal.at(k)[j]) ) )
+				if ( Mahalanobis(delta.at(k), deviationVal.at(k)[j]) < sqrt(cv::trace(deviationVal.at(k)[j])) )
 				{
 					count++;
 					isCurrent.at(k) = true;
